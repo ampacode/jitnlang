@@ -1,0 +1,30 @@
+css site {
+
+    int gap = 16;
+    int rad = 12;
+    int base = 16;
+    int trans = 450;
+
+    ampa.card {
+        padding = gap px;
+        background = gabaa;
+        border-radius = rad px;
+        margin = gap / 2 px;
+        color = m1;
+        transition = opacity trans ms ease;
+    }
+
+    d1.cta {
+        background = d1;
+        border-radius = rad / 2 px;
+        padding = gap / 2 px gap px;
+
+        &:hover {
+            opacity = 90 %;
+        }
+    }
+
+    (header) {
+        font-size = base - 2 px;
+    }
+}

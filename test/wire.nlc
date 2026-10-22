@@ -1,0 +1,9 @@
+using <internet>
+
+net.wire(["ampa", "d2l", "d2s"], "/w", (req) {
+    r = ActivationContext("")
+    r.json = "{\"wired\":true}"
+    return r
+})
+
+net.listen(8091)

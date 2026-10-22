@@ -1,0 +1,28 @@
+using <time>
+class Person
+    string name
+    int age
+    string greet()
+        return "hi " + name
+
+Person touch(Person p)
+    p.age += 1
+    return p
+
+int i = 0
+while (i < 60)
+    p = Person()
+    touch(p)
+    i += 1
+
+int t = 0
+while (t < 6)
+    time.sleep(500)
+    t += 1
+
+q = Person()
+q.name = "vlad"
+q.age = 20
+r = touch(q)
+print(r.age)
+print(r.greet())

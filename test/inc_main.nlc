@@ -1,0 +1,4 @@
+using <lib_inc.nlc>
+
+print(add(2, 3))
+print(greet())

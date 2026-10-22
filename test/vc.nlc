@@ -1,0 +1,8 @@
+string name = "Vlad"
+int age = 30
+
+auto page = view("hello")
+print(page)
+
+auto blk = <ampa [box]>"inline: "$(age + 1)</gabaa>
+print(blk)

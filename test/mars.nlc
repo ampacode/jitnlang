@@ -1,0 +1,23 @@
+# mars.nlc — аудио-плеер + красная планета в тёмном космосе.
+#
+# Страница собирается из vc/nls/nlb:
+#   views/mars.vc    — разметка (canvas, кнопки, рецепторы->html)
+#   styles/mars.nls  — тёмная тема (css mars { ... })
+#   frontend/mars.nlb — nlang -> JS: рендер планеты + WebAudio синтез
+#
+# eval:  nlang nlang-cpp/test/mars.nlc --eval
+# cpp:   nlang nlang-cpp/test/mars.nlc
+# открыть: http://localhost:8095
+using <internet>
+
+# статика: jsgen кладёт frontend/*.js в static/frontend/
+net.staticDir("nlang-cpp/test/static")
+
+net.get("/", (req) {
+    r = ActivationContext("")
+    r.html = view("mars")
+    return r
+})
+
+print("mars player: http://localhost:8095")
+net.listen(8095)

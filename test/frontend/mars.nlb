@@ -1,0 +1,214 @@
+# mars.nlb — плеер + красная планета в тёмном космосе.
+# nlang -> JS (frontend/mars.nlb -> static/frontend/mars.js).
+# Индексы nlang 1-базные: s[1] = первый элемент.
+
+auto sky = document.getElementById("sky");
+auto ctx = sky.getContext("2d");
+int W = 960;
+int H = 560;
+
+# звёздное поле: [x, y, яркость]
+auto stars = [];
+int i = 0;
+while (i < 300) {
+    stars.push([Math.random() * W, Math.random() * H, Math.random()]);
+    i += 1;
+};
+
+# пятна поверхности: [u, v, размер, плотность]
+auto blot = [];
+i = 0;
+while (i < 44) {
+    blot.push([Math.random(), Math.random(),
+               Math.random() * 0.55 + 0.12, Math.random()]);
+    i += 1;
+};
+
+double phase = 0.0;
+bool playing = false;
+auto ac = 0;
+auto master = 0;
+auto analyser = 0;
+auto btn = document.getElementById("playbtn");
+auto st = document.getElementById("status");
+auto vol = document.getElementById("vol");
+auto scale = [220.0, 261.63, 293.66, 349.23, 392.0, 440.0];
+
+void pluck() {
+    if (!playing) { return 0; };
+    auto o = ac.createOscillator();
+    o.type = "triangle";
+    int k = Math.floor(Math.random() * 6.0);
+    o.frequency.value = scale[k + 1];
+    auto g = ac.createGain();
+    double t = ac.currentTime;
+    g.gain.setValueAtTime(0.0, t);
+    g.gain.linearRampToValueAtTime(0.14, t + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 1.6);
+    o.connect(g);
+    g.connect(master);
+    o.start(t);
+    o.stop(t + 1.7);
+};
+
+void ensure_audio() {
+    if (ac != 0) { return 0; };
+    ac = new AudioContext();
+    master = ac.createGain();
+    master.gain.value = stod(vol.value) / 100.0;
+    master.connect(ac.destination);
+    analyser = ac.createAnalyser();
+    analyser.fftSize = 128;
+    master.connect(analyser);
+    # низкий дрон: пила + синус через фильтр
+    auto o1 = ac.createOscillator();
+    o1.type = "sawtooth";
+    o1.frequency.value = 55.0;
+    auto o2 = ac.createOscillator();
+    o2.type = "sine";
+    o2.frequency.value = 110.0;
+    auto fl = ac.createBiquadFilter();
+    fl.type = "lowpass";
+    fl.frequency.value = 240.0;
+    fl.Q.value = 6.0;
+    auto g1 = ac.createGain();
+    g1.gain.value = 0.07;
+    o1.connect(fl);
+    o2.connect(fl);
+    fl.connect(g1);
+    g1.connect(master);
+    o1.start();
+    o2.start();
+    # ветер: медленный LFO качает частоту фильтра
+    auto lfo = ac.createOscillator();
+    lfo.frequency.value = 0.07;
+    auto lg = ac.createGain();
+    lg.gain.value = 90.0;
+    lfo.connect(lg);
+    lg.connect(fl.frequency);
+    lfo.start();
+    setInterval(pluck, 1100);
+};
+
+void draw() {
+    ctx.fillStyle = "#020206";
+    ctx.fillRect(0, 0, W, H);
+
+    # звёзды мерцают
+    int n = 0;
+    for (s : stars) {
+        double tw = 0.25 + 0.75 * Math.abs(Math.sin(phase * 1.5 + n * 1.7));
+        ctx.fillStyle = "rgba(215,228,255," + tw * s[3] + ")";
+        if (s[3] > 0.75) {
+            ctx.fillRect(s[1], s[2], 2, 2);
+        } else {
+            ctx.fillRect(s[1], s[2], 1, 1);
+        };
+        n += 1;
+    };
+
+    double cx = W * 0.6;
+    double cy = H * 0.5;
+    double R = 160.0;
+
+    # уровень спектра -> сила свечения
+    double level = 0.0;
+    if (playing) {
+        if (analyser != 0) {
+            auto arr = new Uint8Array(analyser.frequencyBinCount);
+            analyser.getByteFrequencyData(arr);
+            double sum = 0.0;
+            for (b : arr) { sum += b; };
+            level = sum / analyser.frequencyBinCount / 255.0;
+        };
+    };
+
+    # атмосфера — внешнее свечение пульсирует со звуком
+    auto glow = ctx.createRadialGradient(cx, cy, R * 0.5, cx, cy,
+                                         R * (2.0 + level * 1.4));
+    glow.addColorStop(0.0, "rgba(255,110,50," + (0.12 + level * 0.4) + ")");
+    glow.addColorStop(1.0, "rgba(255,80,30,0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, H);
+
+    # диск планеты: свет слева-сверху, тень на лимбе
+    auto pg = ctx.createRadialGradient(cx - R * 0.35, cy - R * 0.4,
+                                       R * 0.08, cx, cy, R);
+    pg.addColorStop(0.0, "#ff9a60");
+    pg.addColorStop(0.4, "#e05a22");
+    pg.addColorStop(0.78, "#8c2008");
+    pg.addColorStop(1.0, "#3d0d03");
+    ctx.fillStyle = pg;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0.0, Math.PI * 2.0);
+    ctx.fill();
+
+    # поверхность вращается (клип к диску)
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0.0, Math.PI * 2.0);
+    ctx.clip();
+    for (b : blot) {
+        double uu = b[1] + phase * 0.06;
+        uu -= Math.floor(uu);
+        double bx = cx - R + uu * R * 2.0;
+        double by = cy - R * 0.75 + b[2] * R * 1.5;
+        double br = b[3] * 34.0;
+        ctx.fillStyle = "rgba(50,12,4," + (0.18 + b[4] * 0.3) + ")";
+        ctx.beginPath();
+        ctx.ellipse(bx, by, br, br * 0.45, 0.0, 0.0, Math.PI * 2.0);
+        ctx.fill();
+    };
+    # полярная шапка
+    ctx.fillStyle = "rgba(255,238,224,0.5)";
+    ctx.beginPath();
+    ctx.ellipse(cx, cy - R * 0.9, R * 0.45, R * 0.14, 0.0,
+                0.0, Math.PI * 2.0);
+    ctx.fill();
+    # терминатор — справа ночь
+    auto sh = ctx.createLinearGradient(cx + R * 0.2, cy, cx + R, cy);
+    sh.addColorStop(0.0, "rgba(0,0,8,0)");
+    sh.addColorStop(1.0, "rgba(1,0,6,0.9)");
+    ctx.fillStyle = sh;
+    ctx.fillRect(cx + R * 0.2, cy - R, R * 0.8, R * 2.0);
+    ctx.restore();
+
+    # Фобос — крошечная точка на орбите
+    double px = cx + Math.cos(phase * 0.8) * (R + 80.0);
+    double py = cy + Math.sin(phase * 0.8) * (R + 80.0) * 0.45;
+    ctx.fillStyle = "#8a6a55";
+    ctx.beginPath();
+    ctx.arc(px, py, 3.0, 0.0, Math.PI * 2.0);
+    ctx.fill();
+
+    phase += 0.008;
+    requestAnimationFrame(draw);
+};
+
+void onplay() {
+    ensure_audio();
+    playing = !playing;
+    if (playing) {
+        ac.resume();
+        btn.textContent = "STOP";
+        st.textContent = "playing // ambient";
+    } else {
+        ac.suspend();
+        btn.textContent = "PLAY";
+        st.textContent = "engine idle";
+    };
+};
+
+void onvol() {
+    if (ac != 0) {
+        master.gain.value = stod(vol.value) / 100.0;
+    };
+};
+
+btn.addEventListener("click", onplay);
+vol.addEventListener("input", onvol);
+requestAnimationFrame(draw);
+
+
+
+

@@ -1,0 +1,51 @@
+# audioplayer.nlc — аудиоплеер на nlang (eval + jit).
+#
+#   nlang test/audioplayer.nlc --eval -- a.mp3 b.wav c.mp3
+#   nlang test/audioplayer.nlc --eval            # демо: тема нотами
+#
+# sound.* теперь MCI: play/pause/resume/seek/volume/
+# position/length/mode/wait — трек любого формата.
+using <sound>
+using <sys>
+using <time>
+using <str>
+
+string fmt(long long ms)
+    long long s = ms / 1000
+    long long m = s / 60
+    long long r = s % 60
+    string mm = str(m)
+    string ss = str(r)
+    if (r < 10)
+        ss = "0" + ss
+    return mm + ":" + ss
+
+# играет файл до конца, печатает прогресс раз в ~400мс
+void play_track(string f)
+    print(">> " + f)
+    sound.play(f)
+    sound.volume(80)
+    while (sound.mode() == "playing")
+        print("\r   " + fmt(sound.position()) + " / " +
+              fmt(sound.length()) + "   ")
+        time.sleep(400)
+    print("\r   " + fmt(sound.length()) + " / " +
+          fmt(sound.length()) + "   done\n")
+
+# --- плейлист из argv или встроенная мелодия ---
+vector<string> files = []
+for (a : sys.args())
+    if (str.endsWith(a, ".mp3") || str.endsWith(a, ".wav") ||
+        str.endsWith(a, ".m4a") || str.endsWith(a, ".flac"))
+        files.push(a)
+
+if (files.size() > 0)
+    for (f : files)
+        play_track(f)
+else
+    print("no files — playing built-in theme")
+    vector<string> seq = ["A3","D4","F4","A4","G4","F4","D4","A3",
+                          "E4","A4","C5","B4","A4","G4","A4"]
+    for (n : seq)
+        sound.note(n, 320)
+print("done")

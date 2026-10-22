@@ -1,0 +1,35 @@
+using <sqlite>
+
+database maindb {
+    file = ":memory:"
+}
+
+model User
+    string name
+    int age
+
+maindb.exec("create table \"User\" (id integer primary key autoincrement, name text, age integer)")
+
+auto u = User()
+u.name = "тестовый"
+u.age = 30
+u.save()
+
+u2 = User()
+u2.name = "другой"
+u2.age = 25
+u2.save()
+
+print(User.count())
+auto user = User.filter(name = "тестовый").receive()
+print(user.name)
+user.name = "тестовый2"
+user.save()
+print(User.filter(name = "тестовый2").receive().name)
+print(User.exists("name", "другой"))
+print(User.filter(name = "другой").count())
+
+# статические методы
+print(User.all().size())
+user.remove()
+print(User.count())

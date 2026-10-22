@@ -1,0 +1,40 @@
+using <math>
+using <str>
+using <file>
+using <time>
+using <random>
+using <json>
+
+print(math.floor(3.7))
+print(math.ceil(3.2))
+print(math.sqrt(16.0))
+print(math.pow(2.0, 8.0))
+print(math.pi())
+
+s = "Hello, World"
+print(str.upper(s))
+print(str.lower(s))
+print(str.contains(s, "World"))
+print(str.indexOf(s, "World"))
+parts = str.split("a,b,c", ",")
+print(parts)
+print(str.join(parts, "+"))
+
+file.write("modules_test.txt", "line1\nline2\n")
+print(file.exists("modules_test.txt"))
+print(file.read("modules_test.txt"))
+print(file.lines("modules_test.txt"))
+file.remove("modules_test.txt")
+
+random.seed(42)
+print(random.int(1, 100))
+print(random.int(1, 100))
+random.seed(42)
+print(random.int(1, 100))
+
+print(time.date())
+
+json j = json.import("{\"x\": 1, \"arr\": [10, 20]}")
+print(j["x"])
+print(j["arr"][1])
+print(json.export(j))

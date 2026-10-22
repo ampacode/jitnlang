@@ -1,0 +1,80 @@
+# bench: интерпретатор vs компилятор vs hot-swap
+# eval: nlang bench.nlc --eval
+# cpp:  nlang bench.nlc  -> cppOut/a.exe
+using <time>
+using <sys>
+
+double arith(int n)
+    double t0 = time.now()
+    long long acc = 0
+    int i = 0
+    while (i < n)
+        acc += i * 2 - i / 3
+        i += 1
+    print("  arith acc=" + str(acc))
+    return time.now() - t0
+
+double calls(int n)
+    double t0 = time.now()
+    long long acc = 0
+    int i = 0
+    while (i < n)
+        acc += 1
+        i += 1
+    return time.now() - t0
+
+long long fibo(int n)
+    if (n < 2)
+        return n
+    return fibo(n - 1) + fibo(n - 2)
+
+double strcat(int n)
+    double t0 = time.now()
+    string s = ""
+    int i = 0
+    while (i < n)
+        s += "x"
+        i += 1
+    print("  strcat len=" + str(s.size()))
+    return time.now() - t0
+
+double lists(int n)
+    double t0 = time.now()
+    vector<int> v = []
+    int i = 0
+    while (i < n)
+        v.push(i)
+        i += 1
+    long long acc = 0
+    for (x : v)
+        acc += x
+    print("  lists acc=" + str(acc))
+    return time.now() - t0
+
+# hot-swap: функция, которая станет нативной в середине бенча
+double hotloop(int n)
+    long long acc = 0
+    int i = 0
+    while (i < n)
+        acc += i
+        i += 1
+    return acc
+
+print("== nlang bench ==")
+print("arith(1e6): " + str(arith(1000000)) + " ms")
+print("calls(1e6): " + str(calls(1000000)) + " ms")
+double tf = time.now()
+long long f = fibo(28)
+print("fibo(28)=" + str(f) + ": " + str(time.now() - tf) + " ms")
+print("strcat(1e5): " + str(strcat(100000)) + " ms")
+print("lists(1e6): " + str(lists(1000000)) + " ms")
+# hotloop вызываем 80 раз — порог hot-swap < 80:
+# первые вызовы eval, потом нативно
+double th = time.now()
+int r = 0
+while (r < 80)
+    hotloop(20000)
+    r += 1
+print("hotloop x80(2e4): " + str(time.now() - th) + " ms")
+
+

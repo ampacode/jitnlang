@@ -1,0 +1,36 @@
+# player.nlc — звуковой плеер на nlang.
+#
+# eval:  nlang player.nlc --eval   (интерпретатор + hot-swap:
+#         dur_of() станет нативной посреди мелодии — непрерывный
+#         переход eval -> dll без остановки)
+# cpp:   nlang player.nlc          (полностью скомпилированный плеер)
+using <sound>
+using <time>
+
+# Ode to Joy — ноты и длительности (в единицах beat)
+vector<string> notes = [
+    "E4","E4","F4","G4","G4","F4","E4","D4",
+    "C4","C4","D4","E4","E4","D4","D4",
+    "E4","E4","F4","G4","G4","F4","E4","D4",
+    "C4","C4","D4","E4","D4","C4","C4"]
+
+vector<int> beats = [
+    2,2,2,2,2,2,2,2,
+    2,2,2,2,3,1,4,
+    2,2,2,2,2,2,2,2,
+    2,2,2,2,3,1,4]
+
+# чистая функция — кандидат на hot-swap в eval-режиме
+long long dur_of(long long beat)
+    return beat * 110
+
+# играем мелодию несколько раз — dur_of() становится
+# нативной после hot-порога прямо посреди песни
+int rounds = 0
+while (rounds < 3)
+    int i = 0
+    while (i < notes.size())
+        sound.note(notes[i], dur_of(beats[i]))
+        i += 1
+    rounds += 1
+print("done: " + str(notes.size() * rounds) + " notes")

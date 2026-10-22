@@ -1,0 +1,11 @@
+using <regex>
+
+print(re.match("abc123", "[a-z]+[0-9]+"))
+print(re.search("abc123", "[0-9]+"))
+print(re.group("abc123", "([a-z]+)([0-9]+)", 1))
+print(re.group("abc123", "([a-z]+)([0-9]+)", 2))
+print(re.findAll("a1 b2 c3", "[a-z][0-9]"))
+print(re.replace("hello world", "o", "0"))
+print(re.split("a,b;c", "[,;]"))
+print(re.test("[a-z]+"))
+print(re.test("[a-z"))

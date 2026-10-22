@@ -1,0 +1,26 @@
+using <internet>
+
+net.get("/hello", (req) {
+    r = ActivationContext("<h1>hello from nlang</h1>")
+    return r
+})
+
+net.get("/user/{id}", (req) {
+    c = ActivationContext("user=" + req.get("id"))
+    return c
+})
+
+net.post("/echo", (req) {
+    r = ActivationContext("")
+    r.body = "you sent: " + req.body
+    return r
+})
+
+net.get("/api", (req) {
+    r = ActivationContext("")
+    r.json = {"ok": true}
+    return r
+})
+
+print("starting server on :8090")
+net.listen(8090)

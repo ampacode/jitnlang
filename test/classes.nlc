@@ -1,0 +1,23 @@
+class Person
+    public int age = 0
+    public string name = "none"
+    public Person(int a)
+        age = a
+    public int getAge()
+        return age
+    public void setName(string n)
+        name = n
+
+Person p = Person(30)
+print(p.getAge())
+print(p.name)
+p.setName("Vlad")
+print(p.name)
+p.age = 31
+print(p.age)
+
+class Empty
+    public int x
+
+Empty e
+print(e.x)

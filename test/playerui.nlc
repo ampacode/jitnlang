@@ -1,0 +1,121 @@
+# playerui.nlc — аудиоплеер на nlang: web-интерфейс + sound.*
+#
+#   nlang nlang-cpp/test/playerui.nlc --eval [music_dir]
+#   -> http://localhost:8096
+#
+# UI: views/player.vc + styles/player.nls + frontend/player.nlb.
+# Бэкенд: sound.* (MCI) — играет на колонках хоста.
+# Обработчики — именованные функции (в {}-лямбдах нет if-блоков).
+using <internet>
+using <sound>
+using <file>
+using <str>
+using <sys>
+
+# --- плейлист: каталог из первого аргумента или "." ---
+string dir = "."
+for (a : sys.args())
+    if (file.exists(a))
+        if (str.endsWith(a, ".nlc") == false)
+            dir = a
+
+vector<string> files = []
+for (name : file.list(dir))
+    if (str.endsWith(name, ".mp3") || str.endsWith(name, ".wav") ||
+        str.endsWith(name, ".m4a") || str.endsWith(name, ".wma") ||
+        str.endsWith(name, ".flac"))
+        files.push(name)
+
+int idx = -1
+
+ActivationContext jresp(string body)
+    auto r = ActivationContext("")
+    r.json = body
+    return r
+
+void start_track()
+    if (files.size() > 0)
+        sound.play(dir + "/" + files[idx])
+        sound.volume(80)
+
+# --- handlers ---
+
+ActivationContext h_index(auto req)
+    auto r = ActivationContext("")
+    r.html = view("player")
+    return r
+
+ActivationContext h_state(auto req)
+    string name = "-"
+    if (idx >= 0)
+        if (idx < files.size())
+            name = files[idx]
+    return jresp("{\"idx\":" + str(idx) +
+                 ",\"count\":" + str(files.size()) +
+                 ",\"name\":\"" + name + "\"" +
+                 ",\"mode\":\"" + sound.mode() + "\"" +
+                 ",\"pos\":" + str(sound.position()) +
+                 ",\"len\":" + str(sound.length()) +
+                 ",\"tracks\":" + str(files) + "}")
+
+ActivationContext h_select(auto req)
+    idx = str.toInt(req.get("i"))
+    if (idx < 0)
+        idx = 0
+    if (idx >= files.size())
+        idx = files.size() - 1
+    start_track()
+    return jresp("{}")
+
+ActivationContext h_toggle(auto req)
+    if (sound.mode() == "playing")
+        sound.pause()
+    if (sound.mode() == "paused")
+        sound.resume()
+    if (sound.mode() != "playing")
+        if (sound.mode() != "paused")
+            if (idx < 0)
+                idx = 0
+            start_track()
+    return jresp("{}")
+
+ActivationContext h_stop(auto req)
+    sound.stop()
+    return jresp("{}")
+
+ActivationContext h_next(auto req)
+    idx += 1
+    if (idx >= files.size())
+        idx = 0
+    start_track()
+    return jresp("{}")
+
+ActivationContext h_prev(auto req)
+    idx -= 1
+    if (idx < 0)
+        idx = files.size() - 1
+    start_track()
+    return jresp("{}")
+
+ActivationContext h_seek(auto req)
+    long long pct = str.toInt(req.get("pct"))
+    sound.seek(sound.length() * pct / 1000)
+    return jresp("{}")
+
+ActivationContext h_vol(auto req)
+    sound.volume(str.toInt(req.get("v")))
+    return jresp("{}")
+
+net.get("/", h_index)
+net.get("/api/state", h_state)
+net.get("/api/select", h_select)
+net.get("/api/toggle", h_toggle)
+net.get("/api/stop", h_stop)
+net.get("/api/next", h_next)
+net.get("/api/prev", h_prev)
+net.get("/api/seek", h_seek)
+net.get("/api/vol", h_vol)
+
+net.staticDir("nlang-cpp/test/static")
+print("player: http://localhost:8096  dir=" + dir)
+net.listen(8096)

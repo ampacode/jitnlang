@@ -1,0 +1,7 @@
+<nmda [page]>
+    <ht2a>"Hello, Nlang"</gaba>
+    <ampa [card]>
+        <d2>"user: "$(name)", age "$(age)</gaba>
+        <m1 {href = "/about"}>"link"</gaba>
+    </gabaa>
+</gabaa>

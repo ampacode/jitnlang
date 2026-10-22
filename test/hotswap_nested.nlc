@@ -1,0 +1,49 @@
+# hot-swap: вложенные коллекции + модель через ABI
+using <time>
+using <sqlite>
+
+database maindb {
+    file = ":memory:"
+}
+
+model User
+    string name
+    int age
+
+maindb.exec("create table \"User\" (id integer primary key autoincrement, name text, age integer)")
+
+# вложенный вектор через ABI
+vector<vector<double>> mat_id(vector<vector<double>> m)
+    return m
+
+# map через ABI
+vector<int> map_keys(map<string,int> m)
+    vector<int> ks = []
+    return ks
+
+# модель через ABI
+User retouch(User u)
+    u.name += "!"
+    return u
+
+int i = 0
+while (i < 60)
+    mat_id([[1.0, 2.0], [3.0]])
+    retouch(User())
+    i += 1
+
+int t = 0
+while (t < 6)
+    time.sleep(500)
+    t += 1
+
+print(mat_id([[1.0, 2.0], [3.0]]))
+u = User()
+u.name = "x"
+u.age = 7
+r = retouch(u)
+print(r.name)
+print(r.age)
+print(r.rowid)
+r.save()
+print(r.rowid)

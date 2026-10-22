@@ -1,0 +1,22 @@
+anti double_it(a)
+    return a + a
+print(double_it(5))
+
+anti half(a)
+    return a / 2.0
+print(half(7))
+
+anti add3(a, b, c)
+    return a + b + c
+print(add3(1, 2, 3))
+
+anti first(xs)
+    return xs[0]
+list<int> vals = [10, 20]
+print(first(vals))
+
+anti bigger(a, b)
+    if (a > b)
+        return a
+    return b
+print(bigger(3, 9))

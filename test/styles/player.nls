@@ -1,0 +1,140 @@
+css player {
+
+    int gap = 14;
+    int rad = 12;
+
+    gabab {
+        margin = 0 px;
+        background = 0x030309;
+        color = m1;
+        font-family = "Consolas", monospace;
+    }
+
+    .wrap {
+        min-height = 100 vh;
+        display = flex;
+        flex-direction = column;
+        align-items = center;
+        justify-content = center;
+        gap = gap px;
+    }
+
+    .title {
+        margin = 0 px;
+        color = 0xff5a33;
+        font-weight = 100;
+        font-size = 42 px;
+        letter-spacing = 18 px;
+        text-transform = uppercase;
+        text-shadow = 0 0 24 px 0xff5a33;
+    }
+
+    .sub {
+        color = m2;
+        font-size = 11 px;
+        letter-spacing = 5 px;
+        text-transform = uppercase;
+        margin = -8 px 0 4 px;
+    }
+
+    .card {
+        background = gabaa;
+        border = 1 px solid 0x2a1a12;
+        border-radius = rad px;
+        padding = 20 px 24 px;
+        min-width = 560 px;
+        display = flex;
+        flex-direction = column;
+        gap = gap px;
+    }
+
+    .trackname {
+        color = m1;
+        font-size = 15 px;
+        letter-spacing = 1 px;
+        white-space = nowrap;
+        overflow = hidden;
+        text-overflow = ellipsis;
+    }
+
+    (seekbar) {
+        width = 100 %;
+        accent-color = 0xff5a33;
+    }
+
+    .timeinfo {
+        color = m2;
+        font-size = 12 px;
+        letter-spacing = 2 px;
+        text-align = center;
+    }
+
+    .controls {
+        display = flex;
+        align-items = center;
+        gap = gap px;
+        justify-content = center;
+    }
+
+    .btn {
+        background = 0x1c1c26;
+        color = m1;
+        border = 1 px solid 0x2a1a12;
+        padding = 9 px 18 px;
+        font-family = "Consolas", monospace;
+        font-size = 13 px;
+        border-radius = rad px;
+        cursor = pointer;
+        transition = opacity 200 ms ease;
+
+        &:hover {
+            opacity = 80 %;
+        }
+    }
+
+    .big {
+        background = 0xff5a33;
+        color = 0x0a0503;
+        letter-spacing = 4 px;
+        padding = 10 px 30 px;
+    }
+
+    (vol) {
+        accent-color = 0xff5a33;
+        width = 120 px;
+        margin-left = auto;
+    }
+
+    .tracklist {
+        min-width = 560 px;
+        max-height = 260 px;
+        overflow-y = auto;
+        background = 0x0a0a14;
+        border = 1 px solid 0x2a1a12;
+        border-radius = rad px;
+        padding = 6 px;
+    }
+
+    .item {
+        padding = 6 px 12 px;
+        border-radius = 8 px;
+        cursor = pointer;
+        color = m2;
+        font-size = 13 px;
+
+        &:hover {
+            background = 0x1c1c26;
+            color = m1;
+        }
+    }
+
+    .cur {
+        background = 0xff5a33;
+        color = 0x0a0503;
+
+        &:hover {
+            background = 0xff5a33;
+            color = 0x0a0503;
+        }
+    }
+}

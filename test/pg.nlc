@@ -1,0 +1,9 @@
+using <pg>
+
+# локального сервера нет — connect обязан вернуть неработающий хендл,
+# err должен показать причину, а не упасть
+auto db = pg.connect("host=127.0.0.1 port=1 user=x dbname=y")
+print(pg.ok(db))
+print(pg.err(db).size() > 0)
+print(pg.esc(db, "it's \\ ok"))
+pg.close(db)

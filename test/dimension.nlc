@@ -1,0 +1,11 @@
+using <dimension>
+using <time>
+
+void worker()
+    dim2_result["done"] = 42
+    print("worker: done")
+
+dim2.worker()
+print("main: spawned")
+dim2.joinAll()
+print(dim2_result["done"])

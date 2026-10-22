@@ -1,0 +1,27 @@
+<glu>
+    <gaba>
+        <ampa {tag="meta", charset="utf-8"}></gabaa>
+        <ampa {tag="title"}>"NLANG // player"</gabaa>
+        $(style("player"))
+    </gaba>
+    <gabab>
+        <nmda [wrap]>
+            <ht2a [title]>"PLAYER"</gaba>
+            <d2 [sub]>"nlang // mci engine"</gaba>
+            <ampa [card]>
+                <d2 [trackname] (trackname)>"—"</gaba>
+                <d2s (seekbar) {type="range", min="0", max="1000", value="0"}></gabaa>
+                <d2 [timeinfo] (timeinfo)>"0:00 / 0:00"</gaba>
+                <ampa [controls]>
+                    <d1 [btn] (bprev)>"|◀"</gabaa>
+                    <d1 [btn big] (bplay)>"PLAY"</gabaa>
+                    <d1 [btn] (bstop)>"■"</gabaa>
+                    <d1 [btn] (bnext)>"▶|"</gabaa>
+                    <d2s (vol) {type="range", min="0", max="100", value="80"}></gabaa>
+                </gabaa>
+            </gabaa>
+            <ampa [tracklist] (tracklist)></gabaa>
+        </gabaa>
+        <m2 {src="/frontend/player.nlb"}></gaba>
+    </gaba>
+</gaba>

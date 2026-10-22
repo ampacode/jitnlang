@@ -1,0 +1,36 @@
+# Build artifacts
+build/
+build-*/
+out/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+*.make
+
+# Compiled binaries
+*.exe
+*.dll
+*.o
+*.obj
+*.a
+*.lib
+*.pdb
+*.ilk
+
+# Generated code
+/test/cppOut/
+/temp.cpp
+/a.exe
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.sln
+*.vcxproj*
+
+# OS
+.DS_Store
+Thumbs.db

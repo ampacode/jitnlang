@@ -1,0 +1,15 @@
+using <physics>
+using <neuro>
+using <quantum>
+
+print(PV(10, 2, 3))        # 16
+print(PS(10, 2, 3))        # 39
+print(PKin(2, 3))          # 9
+print(POrbitV(5.972e24, 6371000) > 7000)
+print(PPendulum(1))
+print(NDecay(100, 2, 4))   # 25
+print(NOcc(1, 1, 1))       # 0.5
+print(NT12(0.5, 10))
+print(STension(0.01))
+print(SDim(false))         # 10
+print(SDim(true))          # 26

@@ -1,0 +1,18 @@
+using <crypto>
+
+print(crypto.hkdfSha256("ikm", "salt", "info", 32).size())  # 64 hex-чара
+
+k = crypto.keygen()
+print(k.size() > 0)
+
+e = crypto.aes256gcmEncrypt(k, "секрет")
+print(e.size() > 0)
+
+print(crypto.aes256gcmDecrypt(k, e))   # "секрет"
+
+# неверный ключ -> ""
+bad = crypto.keygen()
+print(crypto.aes256gcmDecrypt(bad, e).size())
+
+print(crypto.b64decode(crypto.b64encode("abc123")))  # "abc123"
+print(crypto.toHex("ab"))

@@ -1,0 +1,9 @@
+double fib(double n)
+    if (n < 2)
+        return n
+    return fib(n - 1) + fib(n - 2)
+
+int i = 0
+while (i < 300)
+    print(fib(10))
+    i += 1

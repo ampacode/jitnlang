@@ -1,0 +1,14 @@
+void boot() {
+    log('ampacode: nlang -> js');
+}
+
+bool validateLead(string user, string msg) {
+    if (user == '' || msg == '') {
+        return false;
+    };
+    return true;
+}
+
+int visits = 0;
+visits += 1;
+boot();

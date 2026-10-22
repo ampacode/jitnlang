@@ -1,0 +1,12 @@
+using <sqlite>
+
+auto db = sqlite.open(":memory:")
+print(sqlite.ok(db))
+sqlite.exec(db, "create table t(id integer, name text)")
+sqlite.exec(db, "insert into t values (1, 'alice')")
+sqlite.exec(db, "insert into t values (2, 'bob')")
+print(sqlite.count(db, "select count(*) from t"))
+print(sqlite.one(db, "select name from t where id = 2"))
+print(sqlite.column(db, "select name from t order by id").size())
+print(sqlite.query(db, "select id,name from t").size())
+print(sqlite.esc(db, "it's ok"))

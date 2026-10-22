@@ -1,0 +1,92 @@
+# player.nlb — UI плеера: поллинг /api/state + команды.
+# nlang -> JS; индексы 1-базные, комментарии через #.
+
+auto trackname = document.getElementById("trackname");
+auto timeinfo = document.getElementById("timeinfo");
+auto seekbar = document.getElementById("seekbar");
+auto tl = document.getElementById("tracklist");
+auto bplay = document.getElementById("bplay");
+auto bstop = document.getElementById("bstop");
+auto bprev = document.getElementById("bprev");
+auto bnext = document.getElementById("bnext");
+auto vol = document.getElementById("vol");
+
+bool seek_hold = false;
+string last_tracks = "";
+
+void api(string q) {
+    fetch("/api/" + q);
+};
+
+void sel(int i) {
+    api("select?i=" + i);
+};
+
+string mmt(double ms) {
+    int s = Math.floor(ms / 1000.0);
+    int m = Math.floor(s / 60.0);
+    int r = s - m * 60;
+    string ss = "" + r;
+    if (r < 10) { ss = "0" + r; };
+    return m + ":" + ss;
+};
+
+void apply_state(auto s) {
+    trackname.textContent = s.name;
+    if (s.mode == "playing") {
+        bplay.textContent = "❚❚";
+    } else {
+        bplay.textContent = "PLAY";
+    };
+    timeinfo.textContent = mmt(s.pos) + " / " + mmt(s.len);
+    if (!seek_hold && s.len > 0) {
+        seekbar.value = Math.floor(s.pos * 1000.0 / s.len);
+    };
+    # плейлист перестраиваем только при смене набора
+    string sig = "" + s.idx + "|" + s.count;
+    if (sig != last_tracks) {
+        last_tracks = sig;
+        string html = "";
+        int i = 0;
+        for (t : s.tracks) {
+            string cls = "item";
+            if (i == s.idx) { cls = "item cur"; };
+            html += "<div class=\"" + cls +
+                    "\" onclick=\"sel(" + i + ")\">" + t +
+                    "</div>";
+            i += 1;
+        };
+        tl.innerHTML = html;
+    };
+};
+
+void poll() {
+    fetch("/api/state").then(function(r) {
+        return r.json();
+    }).then(function(s) {
+        apply_state(s);
+    });
+};
+
+void onplay() { api("toggle"); };
+void onstop() { api("stop"); };
+void onprev() { api("prev"); };
+void onnext() { api("next"); };
+
+void onseek_down() { seek_hold = true; };
+void onseek_up() {
+    seek_hold = false;
+    api("seek?pct=" + seekbar.value);
+};
+void onvol() { api("vol?v=" + vol.value); };
+
+bplay.addEventListener("click", onplay);
+bstop.addEventListener("click", onstop);
+bprev.addEventListener("click", onprev);
+bnext.addEventListener("click", onnext);
+seekbar.addEventListener("mousedown", onseek_down);
+seekbar.addEventListener("mouseup", onseek_up);
+vol.addEventListener("input", onvol);
+
+setInterval(poll, 400);
+poll();

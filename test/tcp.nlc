@@ -1,0 +1,22 @@
+using <tcp>
+
+# loopback: сокет-сервер + клиент в одном процессе
+# connect идёт в backlog, accept забирает позже — потоков нет
+
+int l = TcpListen(8199)
+print(l > 0)
+
+int c = TcpConnect("127.0.0.1", 8199)
+print(c > 0)
+
+int s = TcpAccept(l)
+print(s > 0)
+
+TcpSend(c, "ping\n")
+print(TcpRecvLine(s))
+print(TcpPeerIp(s))
+
+TcpClose(c)
+TcpClose(s)
+TcpClose(l)
+print("done")

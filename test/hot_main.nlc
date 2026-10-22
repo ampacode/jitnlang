@@ -1,0 +1,8 @@
+using <lib_inc.nlc>
+using <time>
+
+int i = 0
+while (i < 20)
+    print(greet())
+    time.sleep(500)
+    i += 1

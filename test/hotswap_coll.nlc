@@ -1,0 +1,26 @@
+# hot-swap с коллекциями: vector<int>/JValue через JSON через ABI
+using <time>
+
+vector<int> sumup(vector<int> v)
+    int acc = 0
+    for (x : v)
+        acc += x
+    return [acc, v.size()]
+
+JValue echo(JValue v)
+    return v
+
+int i = 0
+while (i < 60)
+    sumup([1, 2, 3])
+    echo([1])
+    i += 1
+
+# ждём фоновую компиляцию
+int t = 0
+while (t < 6)
+    time.sleep(500)
+    t += 1
+
+print(sumup([1, 2, 3, 4]))
+print(echo({"a": 1, "b": [2, 3]}))

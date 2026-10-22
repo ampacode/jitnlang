@@ -1,0 +1,9 @@
+using <json>
+using <internet>
+
+net.get("/", (req) {
+    r = ActivationContext("")
+    r.json = {"ok": true, "n": 42}
+    return r
+})
+print("registered")

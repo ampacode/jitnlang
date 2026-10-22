@@ -1,0 +1,23 @@
+<glu>
+    <gaba>
+        <ampa {tag="meta", charset="utf-8"}></gabaa>
+        <ampa {tag="title"}>"MARS // deep field"</gabaa>
+        $(style("mars"))
+    </gaba>
+    <gabab>
+        <nmda [space]>
+            <ht2a [title]>"MARS"</gaba>
+            <d2 [sub]>"deep field // ambient engine"</gaba>
+            <ampa (stagebox)>
+                <ampa (sky) {tag="canvas", width="960", height="560"}></gabaa>
+            </gabaa>
+            <ampa [deck]>
+                <d1 [btn] (playbtn)>"PLAY"</gabaa>
+                <d2s (vol) {type="range", min="0", max="100", value="45"}></gabaa>
+                <d2 [status] (status)>"engine idle"</gaba>
+                <d2 [track]>"mars // ambient engine"</gaba>
+            </gabaa>
+        </gabaa>
+        <m2 {src="/frontend/mars.nlb"}></gaba>
+    </gaba>
+</gaba>
