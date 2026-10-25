@@ -59,15 +59,3 @@
   (compile_all_nlb при сборке + resolve в vc-атрибутах).
 - `src=".../app.nlb"` → `/frontend/app.js` — в `view()`
   (eval — на каждый рендер, cpp — при эмиссии).
-
-## Hot-reload ������
-
-- `.nlc`/`.nlb`: `nlang_include_eval` + `mark_hot` � �������,
-  ������ � model-������� �������� `hot_path`; ��� ������
-  ��������� FNV-��� ����������� � ���� ��������������.
-- `.vc`: `view("x")` ������ `views/x.vc` �� ������ ����� �
-  ��������� ����� �����.
-- `.nls`/`.css`: `style("x")` ������������ `styles/x.nls`
-  �� ������ �����.
-- cpp-�����: `view`/`style`/`using <file>` ������������ ��
-  ����� ���������� (��� `#include`) � ��� � py.
